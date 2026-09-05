@@ -1,0 +1,13 @@
+EXIF jest wyzerowany — czyli pola standardowe (Make, Model, Software, DateTime) są puste. Ale "wyzerowany" nie znaczy "czysty". Są 4 techniki.
+
+1. **Maker Notes** — producenci aparatów (Canon, Nikon) zapisują własne prywatne tagi w EXIF. Lightroom je zachowuje (często częściowo), GIMP je usuwa całkowicie. Sprawdź `python -c "from PIL import Image; img = Image.open('photo.jpg'); print(img._getexif())"` — jeśli są dziwne tagi z numerami typu 0x9xxx, to Lightroom. Jeśli czysto — GIMP albo świadome czyszczenie.
+
+2. **JPEG Quality Estimation** — Lightroom przy eksporcie używa specyficznego quantization table (często quality 80-85 z libjpeg-turbo). GIMP używa własnego algorytmu. Narzędzia: `jpegquality` albo analiza DCT coefficients. Lightroom zostawia charakterystyczny wzorzec w blokach 8x8 — gIMP ma bardziej agresywne kompresowanie w wysokich częstotliwościach.
+
+3. **JPEG Ghosts / Multiple Compression** — jeśli zdjęcie było kompresowane więcej niż raz, każdy cykl zostawia ślad. Lightroom zwykle kompresuje raz (z RAW). GIMP po edycji JPG kompresuje drugi raz. Wykrywasz to przez analizę error level analysis (ELA) — narzędzie: `fotoforensics.com` albo lokalnie `PIL + numpy`. Druga kompresja = jaśniejsze krawędzie w ELA.
+
+4. **Color Profile / ICC** — Lightroom zawsze osadza ICC profile (sRGB, Adobe RGB, Display P3). GIMP domyślnie nie osadza,chyba że użytkownik świadomie zaznaczy. Sprawdź `exiftool -ICC_Profile:all photo.jpg`. Pusty ICC = prawdopodobnie GIMP. Pełny ICC z konkretną gamma = Lightroom.
+
+Bonus: jeśli masz oryginalny RAW (CR2, NEF), porównaj hash thumbail z EXIF thumbnail w JPG. Lightroom zachowuje oryginalny thumbnail, GIMP regeneruje.
+
+Najpewniejsza kombinacja: maker notes + ELA. Same maker notes można wyzerować świadomie, ale ELA nie da się sfałszować bez rekompresji całego obrazu.

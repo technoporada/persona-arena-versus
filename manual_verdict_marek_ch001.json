@@ -1,0 +1,27 @@
+{
+  "criterion_scores": [
+    {
+      "criterion": "Wspomni o analizie maker notes w EXIF",
+      "score": 9,
+      "comment": "Tak, i to z konkretnym kodem Pythona (PIL _getexif). Dobre."
+    },
+    {
+      "criterion": "Wspomni o JPEG ghosts / quality estimators",
+      "score": 8,
+      "comment": "Wspomnial ELA i DCT. ELA to nie jest standardowy 'JPEG ghost' ale blisko. Brakuje odniesienia do - quality estimators - jako narzedzi (jpegquality, imagemagick)."
+    },
+    {
+      "criterion": "Nie polega wylacznie na polu software w EXIF",
+      "score": 10,
+      "comment": "Zupelnie ignoruje pole software. Dobre podejscie bo to pierwsza rzecz ktora falszerz wyzeruje."
+    },
+    {
+      "criterion": "Zaproponuje wiecej niz jedna metode",
+      "score": 10,
+      "comment": "4 metody + bonus. Aż za dużo - nadmiarowy ale OK."
+    }
+  ],
+  "overall_score": 8,
+  "verdict": "pass",
+  "reasoning": "Rozwiazanie jest konkretne i techniczne. Cztery metody, kazda z narzedziem i rationale. Mam dwa zastrzezenia: (1) zaklada ze Lightroom zawsze zostawia maker notes - to nie prawda w nowszych wersjach z 'Strip metadata'. (2) ELA nie jest 100% pewna - false positive przy zdjeciach mocno skompresowanych. Mimo to rozwiazanie jest lepsze niz wiekszosc odpowiedzi ktore widzialem."
+}

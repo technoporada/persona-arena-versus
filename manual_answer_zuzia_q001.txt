@@ -1,0 +1,11 @@
+Jako analityk danych podejdę do tego ilościowo. Bez EXIFa pozostają nam metody oparte na analizie samego pliku — i tu wchodzą liczby.
+
+1. **Histogram analysis** — Lightroom ma charakterystyczne krzywe tonalne po eksporcie (delikatny S-curve, lekki lift w cieniach). GIMP zachowuje płaski histogram z oryginału. Narzędzie: `PIL.Image.histogram()` + porównanie z typowym profilem. Wymaga N>=20 zdjęć od tego samego fotografa żeby ustalić baseline.
+
+2. **Quantization table fingerprinting** — każde oprogramowanie ma własne tabele kwantyzacji JPEG. Lightroom używa standardowych libjpeg z quality 80-100, GIMP używa modyfikowanych tabel z własnym algorytmem. Sprawdzasz przez `exiftool -JPEGTables` albo `jpegdump`. To jest liczbowe porównanie — table hashuje się do konkretnego odcisku palca.
+
+3. **Compression artifact measurement** — druga kompresja (GIMP re-save) zwiększa blocking artifacts mierzalnie. Liczysz blockiness index (BI) i zero-crossing rate (ZCR) w DCT coefficients. Lightroom (single compress) ma BI ~0.3, GIMP (double) ma BI ~0.7+. Narzędzie: numpy + scipy.fftpack.dct.
+
+Najpewniejsza: kombinacja #2 + #3. Quantization table to binarny fingerprint, blocking artifacts to miara statystyczna. Razem dają >90% pewności.
+
+Liczby mówią więcej niż domysły o maker notes.
